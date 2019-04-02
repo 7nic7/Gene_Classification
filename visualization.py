@@ -1,5 +1,5 @@
 from Gene_Classification.nn import conv2d, max_pool, dense
-from vis.visualization import visualize_activation, visualize_saliency_v2, visualize_cam
+from vis.visualization import visualize_activation, visualize_saliency_v2, visualize_cam, visualize_saliency
 from vis.utils import utils
 from keras.models import Sequential
 from keras.layers import Flatten, Activation, Dropout, BatchNormalization
@@ -84,17 +84,40 @@ class Visualization:
         """
         if layer_index == 'default':
             layer_index = utils.find_layer_idx(self.model, 'preds')
-        img = visualize_saliency_v2(self.model,
-                                    layer_idx=layer_index,
-                                    seed_input=seed_input,
-                                    filter_indices=filter_index,
-                                    grad_modifier=grad_modifier)
+        img = visualize_saliency(self.model,
+                                 layer_idx=layer_index,
+                                 seed_input=seed_input,
+                                 filter_indices=filter_index,
+                                 grad_modifier=grad_modifier)
         if plot:
-            plt.figure()
-            plt.imshow(img, cmap='jet')
-            plt.show()
+            plt.imshow(img.reshape([33, 40, -1]), cmap='jet')
 
         return img
+
+    def vis_saliency_grads(self, filter_index, seed_input, grad_modifier='absolute',
+                           layer_index='default', plot=False):
+        """
+        Args:
+            filter_index: The label (1 or 0) which represents "S" or "R".
+            seed_input: The image with shape of (27, 27 ,1).
+            grad_modifier: Default value is "absolute", it can be changed by "relu" or "negate".
+            layer_index: If "default", it will choose "preds" layer, or you can pass an integer less than 5.
+            plot: If True, it will plot a figure of class saliency map.(Default is False)
+
+        Returns:
+            An numpy.array with the shape of 283*24*3 of a RGB image.
+        """
+        if layer_index == 'default':
+            layer_index = utils.find_layer_idx(self.model, 'preds')
+        grads = visualize_saliency_v2(self.model,
+                                      layer_idx=layer_index,
+                                      seed_input=seed_input,
+                                      filter_indices=filter_index,
+                                      grad_modifier=grad_modifier)
+        if plot:
+            plt.imshow(grads.reshape([33, 40]), cmap='gray')
+
+        return grads
 
     def vis_cam(self, filter_index, seed_input, layer_index='default', plot=False):
         if layer_index == 'default':

@@ -1,7 +1,9 @@
 from Gene_Classification.visualization import *
 from Gene_Classification.dataset import *
 from Gene_Classification.biomarker_selection import select_biomarker_spearman
+import warnings
 
+# warnings.filterwarnings('ignore')
 one_hot = True
 data, g_names, s_names = read_data(file='C:/Users/tianping/Desktop/GeneDeleteSameAndRLarge.csv')
 x, y = preprocess(data, one_hot=one_hot, nn=True, n_col=4)
@@ -45,9 +47,16 @@ print('The loss of test data is %s, accuracy is %s' % (loss, accuracy))
 # print(remain)
 
 # print(y_test)
-grads = vis.vis_saliency(np.argmax(y_test[-2], axis=0), X_test[-2], plot=False)
+# saliency map: 一个是直接可视化最后的grad，一个是将grad转化为jet再可视化
+# 看一下是否是亮点位置是一致的
+plt.subplot(121)
+imgs = vis.vis_saliency(np.argmax(y_test[-2], axis=0), X_test[-2], plot=True)
+plt.subplot(122)
+grads = vis.vis_saliency_grads(np.argmax(y_test[-2], axis=0), X_test[-2], plot=True)
+plt.show()
 # map_part = vis_saliency_part(X_train, y_train, (245, 255, 7, 17), num=5)
-print(grads)
-print(grads.shape)
+print('--- shape: ')
+print('saliency map with grads:', grads.shape)
+print('saliency map with images:', imgs.shape)
 
 

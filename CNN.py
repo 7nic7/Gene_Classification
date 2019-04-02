@@ -1,8 +1,8 @@
 import numpy as np
 from tqdm import tqdm
-from gene.nn import *
-from gene.visualization import plot_train_curve, plot_tsne
-from gene.evaluate import confusion_matrix_and_auc
+from Gene_Classification.nn import *
+from Gene_Classification.visualization import plot_train_curve, plot_tsne
+from Gene_Classification.evaluate import confusion_matrix_and_auc
 
 
 class CNN:

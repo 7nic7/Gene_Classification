@@ -1,10 +1,10 @@
-from gene.CNN import *
-from gene.dataset import read_data, split_data, preprocess
-from gene.evaluate import *
+from Gene_Classification.CNN import *
+from Gene_Classification.dataset import read_data, split_data, preprocess
+from Gene_Classification.evaluate import *
 from sklearn import model_selection
-from gene.visualization import plt
-from gene.biomarker_selection import select_biomarker_spearman
-import pandas as pd
+from Gene_Classification.visualization import plt
+from Gene_Classification.biomarker_selection import select_biomarker_spearman
+# import pandas as pd
 # if you want to run the main.py, you should change the file path.
 # through set parameter "file" in read_data.
 # for example: data = read_data(file='C:/data.csv').

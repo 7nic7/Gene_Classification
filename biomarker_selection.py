@@ -1,4 +1,4 @@
-from gene.dataset import read_data
+from Gene_Classification.dataset import read_data
 import numpy as np
 from sklearn import feature_selection
 from scipy.stats import spearmanr
@@ -34,7 +34,7 @@ def select_biomarker_chisq(X_train, y_train, X_val, y_val, X_test, y_test, gene_
 
 
 # p_values < 0.05 : 33
-def select_biomarker_spearman(X_train, y_train, X_val, y_val, X_test, y_test, gene_names):
+def select_biomarker_spearman(X_train, y_train, X_val, y_val, X_test, y_test, gene_names, threshold=0.5):
     x = np.concatenate([X_train, X_val], axis=0)
     y = np.concatenate([y_train, y_val], axis=0)
     new_x = np.zeros([x.shape[0], x.shape[1]])
@@ -44,8 +44,8 @@ def select_biomarker_spearman(X_train, y_train, X_val, y_val, X_test, y_test, ge
             new_x[i, j] = np.argmax(x[i, j, :, 0]) + 1
     rho, p_values = spearmanr(np.hstack([new_x, new_y]))
     rho, p_values = rho[:-1, -1], p_values[:-1, -1]
-    index = (p_values < 0.5)
-    print('features number:', sum(p_values < 0.05))
+    index = (p_values < threshold)
+    print('features number:', sum(p_values < threshold))
     X_train = X_train[:, index]
     X_val = X_val[:, index]
     X_test = X_test[:, index]

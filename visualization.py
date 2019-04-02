@@ -1,12 +1,14 @@
-from gene.nn import conv2d, max_pool, dense
-from vis.visualization import visualize_activation, visualize_saliency, visualize_cam
+from Gene_Classification.nn import conv2d, max_pool, dense
+from vis.visualization import visualize_activation, visualize_saliency_v2, visualize_cam
 from vis.utils import utils
 from keras.models import Sequential
 from keras.layers import Flatten, Activation, Dropout, BatchNormalization
 from keras.optimizers import Adam
 import matplotlib.pyplot as plt
-from gene.stat import *
+from Gene_Classification.stat import *
 from sklearn import manifold
+
+# 注: 修改了原工程中的visualize_saliency函数等
 
 
 class Visualization:
@@ -22,7 +24,7 @@ class Visualization:
     def build_network(self):
         self.model = Sequential()
         # conv_pool1
-        self.model.add(conv2d(filters=12, kernel_size=(2, 4), padding='same', input_shape=(182, 4, 1),
+        self.model.add(conv2d(filters=12, kernel_size=(4, 4), padding='same', input_shape=(330, 4, 1),
                        vis=True, name='conv1_1'))
         # self.model.add(BatchNormalization(name='bn1_1'))
         self.model.add(Activation('relu'))
@@ -82,11 +84,11 @@ class Visualization:
         """
         if layer_index == 'default':
             layer_index = utils.find_layer_idx(self.model, 'preds')
-        img = visualize_saliency(self.model,
-                                 layer_idx=layer_index,
-                                 seed_input=seed_input,
-                                 filter_indices=filter_index,
-                                 grad_modifier=grad_modifier)
+        img = visualize_saliency_v2(self.model,
+                                    layer_idx=layer_index,
+                                    seed_input=seed_input,
+                                    filter_indices=filter_index,
+                                    grad_modifier=grad_modifier)
         if plot:
             plt.figure()
             plt.imshow(img, cmap='jet')

@@ -24,7 +24,7 @@ class Visualization:
     def build_network(self):
         self.model = Sequential()
         # conv_pool1
-        self.model.add(conv2d(filters=12, kernel_size=(4, 4), padding='same', input_shape=(330, 4, 1),
+        self.model.add(conv2d(filters=12, kernel_size=(4, 4), padding='same', input_shape=(668, 4, 1),
                        vis=True, name='conv1_1'))
         # self.model.add(BatchNormalization(name='bn1_1'))
         self.model.add(Activation('relu'))
@@ -33,7 +33,7 @@ class Visualization:
         self.model.add(Flatten())
         # dense
         self.model.add(Dropout(rate=self.rate))
-        self.model.add(dense(units=3, name='fc3_1', vis=True))
+        self.model.add(dense(units=10, name='fc3_1', vis=True))
         self.model.add(dense(units=2, activation=None, vis=True, name='preds'))
         self.model.add(Activation('softmax'))
         # optimize

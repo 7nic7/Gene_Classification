@@ -46,7 +46,7 @@ class CNN:
             inputs = self.x
 
         with tf.variable_scope('conv_pool1'):
-            conv1_1 = conv2d(inputs, 12, kernel_size=(4, 4), padding='same', activation=None, name='cov1_1')    #12
+            conv1_1 = conv2d(inputs, 12, kernel_size=(2, 2), padding='same', activation=None, name='cov1_1')    #12
             # bn1_1 = tf.layers.batch_normalization(conv1_1, name='bn1_1')
             # conv1_2 = conv2d(bn1_1, 12, kernel_size=(2, 2), padding='same', activation=None, name='cov1_2')
             # bn1_2 = tf.layers.batch_normalization(conv1_2)
@@ -66,7 +66,7 @@ class CNN:
 
         with tf.variable_scope('dense'):
             dropout = tf.nn.dropout(self.flatten, keep_prob=self.keep_prob, name='dropout')
-            self.fc3_1 = dense(dropout, 3, name='fc3_1')  #3
+            self.fc3_1 = dense(dropout, 5, name='fc3_1')  #3
 
             logits = dense(self.fc3_1, 2, name='logits', activation=None)
             self.outputs = tf.nn.softmax(logits, name='outputs')
@@ -107,8 +107,8 @@ class CNN:
 
     def train(self, sess, merged=False):
         sess.run(tf.global_variables_initializer())
-        train_writer = tf.summary.FileWriter('G:/python_file/gene/train/', sess.graph)
-        val_writer = tf.summary.FileWriter('G:/python_file/gene/val/', sess.graph)
+        train_writer = tf.summary.FileWriter('G:/python_file/Gene_Classification/train/', sess.graph)
+        val_writer = tf.summary.FileWriter('G:/python_file/Gene_Classification/val/', sess.graph)
         num = 0
         lr = 1e-3  # 1e-2
         for e in tqdm(range(self.epoch), desc='epoch'):
@@ -116,7 +116,7 @@ class CNN:
             for _ in range(self.num_batch):
                 batch_x, batch_y = self.next_batch()
                 train_feed_dict = {self.x: batch_x, self.y: batch_y, self.lr: lr,
-                                   self.keep_prob: 0.2}
+                                   self.keep_prob: 0.1}
                 if merged:
                     train_result, _ = sess.run([self.merged, self.op],
                                                feed_dict=train_feed_dict)

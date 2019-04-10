@@ -34,7 +34,18 @@ def index_s_sort(origin_index, n_col):
     return new_index
 
 
+def index_s_sort_v2(origin_index, n_col):
+    new_index = []
+    scan_n = 0
+    n = len(origin_index)
+    while n - scan_n >= n_col:
+        new_index.append(origin_index[scan_n:(scan_n+n_col)])
+        scan_n += 2
+    return np.vstack(new_index)
+
+
 def image_s_sort(gene_one, s_index):
+    gene_one = np.asarray(gene_one)
     new_gene_shape = s_index.shape
     s_index = s_index.reshape([1, -1]).squeeze().astype('int')
     gene_one = gene_one[s_index].reshape(new_gene_shape)
@@ -80,12 +91,16 @@ def preprocess(data, one_hot=True, nn=True, n_col=None):
         gene[gene=='C'] = 3
         gene[gene=='T'] = 4
         gene = preprocessing.minmax_scale(gene)
-        n_row = gene.shape[1] // n_col
+        # n_row = gene.shape[1] // n_col
         if nn:
-            x = np.zeros([n, n_row, n_col, 1])
-            s_index = index_s_sort(range(gene.shape[1]), n_col=n_col)
+            x = []
+            # x = np.zeros([n, n_row, n_col, 1])
+            # s_index = index_s_sort(range(gene.shape[1]), n_col=n_col)
+            s_index = index_s_sort_v2(range(gene_dim), n_col=n_col)
             for i in range(n):
-                x[i, :, :, 0] = image_s_sort(gene[i].squeeze(), s_index)
+                x.append(image_s_sort(gene[i].squeeze(), s_index))
+            x = np.stack(x)
+            x = np.expand_dims(x, 3)
             # print(x[0])
         else:
             # squeeze y's shape from 2d into 1d

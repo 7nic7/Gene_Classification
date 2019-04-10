@@ -1,8 +1,7 @@
 from Gene_Classification.visualization import *
 from Gene_Classification.dataset import *
-from Gene_Classification.biomarker_selection import select_biomarker_spearman
-import warnings
-
+# from Gene_Classification.biomarker_selection import select_biomarker_spearman
+from pprint import pprint
 # warnings.filterwarnings('ignore')
 one_hot = True
 data, g_names, s_names = read_data(file='C:/Users/tianping/Desktop/GeneDeleteSameAndRLarge.csv')
@@ -10,9 +9,9 @@ x, y = preprocess(data, one_hot=one_hot, nn=True, n_col=4)
 X_train, y_train, X_val, y_val, X_test, y_test, s_names = split_data(x, y, s_names,
                                                                      train_ratio=0.6,
                                                                      val_ratio=0.2)
-if one_hot:
-    X_train, y_train, X_val, y_val, X_test, y_test, g_names = \
-        select_biomarker_spearman(X_train, y_train, X_val, y_val, X_test, y_test, g_names)
+# if one_hot:
+#     X_train, y_train, X_val, y_val, X_test, y_test, g_names = \
+#         select_biomarker_spearman(X_train, y_train, X_val, y_val, X_test, y_test, g_names)
 
 print(X_train.shape, y_train.shape)
 print(X_val.shape, y_val.shape)
@@ -28,13 +27,13 @@ pre_y = vis.model.predict(
 )
 print('The loss of test data is %s, accuracy is %s' % (loss, accuracy))
 
-# # 统计saliency map上的亮点
-# right_index = np.argmax(pre_y, axis=1) == np.argmax(y, axis=1)
-# x_right, y_right = x[right_index], y[right_index]
-# r_index, s_index = (y_right[:, 0] == 1), (y_right[:, 1] == 1)
-# ans = stat_saliency(x_right, y_right, vis, features_name[:-1],
-#                     is_combine_rg=True)
-# print(ans)
+# 统计saliency map上的亮点
+right_index = np.argmax(pre_y, axis=1) == np.argmax(y, axis=1)
+x_right, y_right = x[right_index], y[right_index]
+r_index, s_index = (y_right[:, 0] == 1), (y_right[:, 1] == 1)
+ans = stat_saliency(x_right, y_right, vis, g_names,
+                    is_combine_rg=True)
+pprint(ans)
 
 # # 只保留出现次数大于1的features的索引值
 # remain = []
@@ -49,14 +48,14 @@ print('The loss of test data is %s, accuracy is %s' % (loss, accuracy))
 # print(y_test)
 # saliency map: 一个是直接可视化最后的grad，一个是将grad转化为jet再可视化
 # 看一下是否是亮点位置是一致的
-plt.subplot(121)
-imgs = vis.vis_saliency(np.argmax(y_test[-2], axis=0), X_test[-2], plot=True)
-plt.subplot(122)
-grads = vis.vis_saliency_grads(np.argmax(y_test[-2], axis=0), X_test[-2], plot=True)
-plt.show()
-# map_part = vis_saliency_part(X_train, y_train, (245, 255, 7, 17), num=5)
-print('--- shape: ')
-print('saliency map with grads:', grads.shape)
-print('saliency map with images:', imgs.shape)
+# plt.subplot(121)
+# imgs = vis.vis_saliency(np.argmax(y_test[-2], axis=0), X_test[-2], plot=True)
+# plt.subplot(122)
+# grads = vis.vis_saliency_grads(np.argmax(y_test[-2], axis=0), X_test[-2], plot=True)
+# plt.show()
+# # map_part = vis_saliency_part(X_train, y_train, (245, 255, 7, 17), num=5)
+# print('--- shape: ')
+# print('saliency map with grads:', grads.shape)
+# print('saliency map with images:', imgs.shape)
 
 

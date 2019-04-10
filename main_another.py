@@ -56,28 +56,28 @@ def main(X_train, y_train, X_val, y_val, X_test, y_test, sample_names, ratio, kf
     else:
         # ratio = sum(y_train[:, 0] == 1) / sum(y_train[:, 1] == 1)
         _, _, _, _, total_err = run(X_train, y_train, X_val, y_val, X_test, y_test, sample_names,
-                                    batch_size=32, epoch=400, ratio=ratio)
+                                    batch_size=32, epoch=450, ratio=ratio)
         if show:
             plt.show()
     return total_err
 
 
 if __name__ == '__main__':
-    one_hot = True
+    one_hot = False
     data, g_names, s_names = read_data(file='C:/Users/tianping/Desktop/GeneDeleteSameAndRLarge.csv')
-    x, y = preprocess(data, one_hot=one_hot, nn=True, n_col=2)
+    x, y = preprocess(data, one_hot=one_hot, nn=True, n_col=4)
     X_train, y_train, X_val, y_val, X_test, y_test, s_names = split_data(x, y, s_names,
                                                                          train_ratio=0.6,
                                                                          val_ratio=0.2)
-    if one_hot:
-        X_train, y_train, X_val, y_val, X_test, y_test, g_names = \
-            select_biomarker_spearman(X_train, y_train, X_val, y_val, X_test, y_test, g_names)
+    # if one_hot:
+    #     X_train, y_train, X_val, y_val, X_test, y_test, g_names = \
+    #         select_biomarker_spearman(X_train, y_train, X_val, y_val, X_test, y_test, g_names)
     print(X_train.shape, y_train.shape)
     print(X_val.shape, y_val.shape)
     print(X_test.shape, y_test.shape)
     print('Data done')
 
-    main(X_train, y_train, X_val, y_val, X_test, y_test, s_names, ratio=3.0, show=True)
+    main(X_train, y_train, X_val, y_val, X_test, y_test, s_names, ratio=5.0, show=True)
     # 重复，以便找到哪些样本的分类错误概率较高
     # errors_tr = []
     # errors_val = []
